@@ -121,9 +121,9 @@ function renderExp(){
     </div>
     <div class="result-body">
       <div class="potions" style="gap:28px;align-items:center;">
-        <div style="text-align:center"><img src="Bigexppot.png" alt="grande"><div style="margin-top:8px;font-weight:700;color:var(--accent)">× ${fmt(p.grandes)}</div><div style="font-size:12px;color:var(--muted)">Grande</div></div>
-        <div style="text-align:center"><img src="Medexppot.png" alt="média"><div style="margin-top:8px;font-weight:700;color:var(--accent)">× ${fmt(p.medias)}</div><div style="font-size:12px;color:var(--muted)">Média</div></div>
-        <div style="text-align:center"><img src="Smallexppot.png" alt="pequena"><div style="margin-top:8px;font-weight:700;color:var(--accent)">× ${fmt(p.pequenas)}</div><div style="font-size:12px;color:var(--muted)">Pequena</div></div>
+        <div style="text-align:center"><img src="assets/Bigexppot.png" alt="grande"><div style="margin-top:8px;font-weight:700;color:var(--accent)">× ${fmt(p.grandes)}</div><div style="font-size:12px;color:var(--muted)">Grande</div></div>
+        <div style="text-align:center"><img src="assets/Medexppot.png" alt="média"><div style="margin-top:8px;font-weight:700;color:var(--accent)">× ${fmt(p.medias)}</div><div style="font-size:12px;color:var(--muted)">Média</div></div>
+        <div style="text-align:center"><img src="assets/Smallexppot.png" alt="pequena"><div style="margin-top:8px;font-weight:700;color:var(--accent)">× ${fmt(p.pequenas)}</div><div style="font-size:12px;color:var(--muted)">Pequena</div></div>
       </div>
     </div>
   `;
@@ -200,17 +200,29 @@ function calcularCristais(){
     resultado.push({lvl,low,high,crystalType,valor,costLow,costHigh});
     totalAvg += avg; totalMax += max_cr; totalCostLow += costLow; totalCostHigh += costHigh;
   }
-  // monta saída
-  let out = `🔧 ${slot} — Nível atual +${current}\n`;
+
+  const equipImageMap = { Emblema: 'emblema.png', Capacete: 'capacete.png', 'Calça': 'calça.png', Peito: 'peito.png', Arma: 'Arma.png', Colar: 'colar.png' };
+  const equipImg = equipImageMap[slot] ? encodeURI('assets/' + equipImageMap[slot]) : '';
+  const gemImg = encodeURI('assets/gema.png');
+
+  // monta saída em HTML com ícones
+  let html = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">`;
+  if(equipImg) html += `<img src="${equipImg}" alt="${slot}" class="equip-icon">`;
+  html += `<div><strong>${slot}</strong> — Nível atual +${current}</div></div>`;
+
   const transfer = get_transfer_cost(slot, current);
-  out += `Custo para transferir o boost: ${transfer} gemas\n\n`;
-  if(resultado.length===0) out += 'Nenhum nível acima do atual.\n';
+  html += `<div style="margin-bottom:8px;"><img src="${gemImg}" alt="gema" class="small-icon"> Custo para transferir o boost: <strong>${transfer}</strong> gemas</div>`;
+
+  if(resultado.length===0) html += '<div>Nenhum nível acima do atual.</div>';
   resultado.forEach(r => {
-    out += `Média para o nível +${r.lvl}: ${fmt(r.low)} a ${fmt(r.high)} cristais (tipo: ${r.crystalType}) → ${fmt(r.costLow)} a ${fmt(r.costHigh)} berry\n`;
+    html += `<div>Média para o nível +${r.lvl}: <strong>${fmt(r.low)}</strong> a <strong>${fmt(r.high)}</strong> cristais (tipo: ${r.crystalType}) → ${fmt(r.costLow)} a ${fmt(r.costHigh)} berry</div>`;
   });
-  out += `\nTotal (média somada): ${fmt(Math.floor(totalAvg))} a ${fmt(Math.floor(totalMax))} cristais → ${fmt(Math.floor(totalCostLow))} a ${fmt(Math.floor(totalCostHigh))} berry\n`;
-  out += `\nNota: médias calculadas usando chance por nível e pity garantido.`;
-  $('cr-result').textContent = out;
+
+  html += `<div style="margin-top:10px;"><strong>Total (média somada): ${fmt(Math.floor(totalAvg))} a ${fmt(Math.floor(totalMax))} cristais</strong> → ${fmt(Math.floor(totalCostLow))} a ${fmt(Math.floor(totalCostHigh))} berry</div>`;
+  html += `<div style="margin-top:8px;color:var(--muted)">Nota: médias calculadas usando chance por nível e pity garantido.</div>`;
+
+  $('cr-result').innerHTML = html;
+
   // persistir
   localStorage.setItem('gla_cr_slot', slot);
   localStorage.setItem('gla_cr_level', String(current));
@@ -259,4 +271,3 @@ window.addEventListener('load', ()=>{
 
 // Expose some functions for debugging (optional)
 window._GLA = {xp_needed, potions_for_xp, expected_attempts};
-
