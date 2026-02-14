@@ -68,6 +68,10 @@ body{margin:0;font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;background:v
 .result{min-height:120px;white-space:pre-wrap;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;color:var(--muted);}
 .result .potions{display:flex;gap:18px;align-items:center}
 .result .potions img{width:64px;height:64px;object-fit:contain}
+
+/* ícones usados na saída de cristais */
+.result img.small-icon{width:18px;height:18px;vertical-align:middle;margin-right:8px;filter:none}
+.result img.equip-icon{width:28px;height:28px;vertical-align:middle;margin-right:8px;border-radius:6px}
 .app-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px}
 .footer-logo{width:48px;height:48px;object-fit:contain}
 .deploy-note{font-size:12px;color:var(--muted)}
